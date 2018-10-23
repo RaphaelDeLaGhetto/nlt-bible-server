@@ -1,0 +1,23 @@
+{
+  "name": "nlt-bible-server",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "NODE_ENV=test node_modules/.bin/jasmine",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "ejs": "~2.5.7",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "mongoose": "^5.3.5",
+    "mongoose-unique-validator": "^2.0.2",
+    "morgan": "~1.9.0"
+  },
+  "devDependencies": {
+    "jasmine": "^3.2.0",
+    "zombie": "^6.1.3"
+  }
+}

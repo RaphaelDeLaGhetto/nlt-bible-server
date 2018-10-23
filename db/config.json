@@ -1,0 +1,35 @@
+{
+  "development": {
+    "username": "nlt_bible_server",
+    "password": "secret",
+    "database": "nlt_bible_server_development",
+    "host": "localhost"
+  },
+  "test": {
+    "username": "nlt_bible_server",
+    "password": "secret",
+    "database": "nlt_bible_server_test",
+    "host": "localhost"
+  },
+  "staging": {
+    "username": "nlt_bible_server",
+    "password": "secret",
+    "database": "nlt_bible_server_staging",
+    "host": "mongo",
+    "dialect": "mongodb"
+  },
+  "tor": {
+    "username": "nlt_bible_server",
+    "password": "secret",
+    "database": "nlt_bible_server_production",
+    "host": "mongo",
+    "dialect": "mongodb"
+  },
+  "production": {
+    "username": "nlt_bible_server",
+    "password": "secret",
+    "database": "nlt_bible_server_production",
+    "host": "mongo",
+    "dialect": "mongodb"
+  }
+}
