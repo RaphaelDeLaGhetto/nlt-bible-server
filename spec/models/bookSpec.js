@@ -3,6 +3,8 @@
 describe('Book', () => {
   const db = require('../../models');
   const Book = db.Book;
+  const importer = require('../../lib/importer');
+  const data = require('../data/nlt-sample.json');
 
   /**
    * Model must haves
@@ -173,6 +175,101 @@ describe('Book', () => {
           }).catch(err => {
             done.fail(err);
           });
+        }).catch(err => {
+          done.fail(err);
+        });
+      });
+    });
+  });
+
+  describe('navigation aids', () => {
+    beforeEach((done) => {
+
+      let bible;
+      importer(data, (err, results) => {
+        if (err) {
+          return done.fail(err);
+        }
+        bible = results;
+        done();
+      });
+    });
+
+    afterEach(done => {
+      db.mongoose.connection.db.dropDatabase().then((err, result) => {
+        done();
+      }).catch(err => {
+        done.fail(err);
+      });
+    });
+
+    describe('#previous', () => {
+
+      it('gets the chapter that follows the current', done => {
+        Book.findOne({ name: 'Genesis' }).then(book => {
+          const next = book.chapters[0].next();
+          expect(next).toEqual(book.chapters[0]);
+          done();
+        }).catch(err => {
+          done.fail(err);
+        });
+      });
+ 
+      it('gets the first chapter of the next book if at the end', done => {
+        Book.findOne({ name: 'Genesis' }).then(book => {
+          const next = book.chapters[1].next();
+          Book.findOne({ name: 'Exodus' }).then(book => {
+            expect(next).toEqual(book.chapters[0]);
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        }).catch(err => {
+          done.fail(err);
+        });
+      });
+
+      it('returns null if at the end of the Bible', done => {
+        Book.findOne({ name: 'Revelation' }).then(book => {
+          const next = book.chapters[book.chapters.length-1].next();
+          expect(next).toBeNull();
+          done();
+        }).catch(err => {
+          done.fail(err);
+        });
+      });
+    });
+
+    describe('#previous', () => {
+      it('gets the chapter that precedes the current', done => {
+        Book.findOne({ name: 'Genesis' }).then(book => {
+          const previous = book.chapters[1].previous();
+          expect(previous).toEqual(book.chapters[0]);
+          done();
+        }).catch(err => {
+          done.fail(err);
+        });
+      });
+
+      it('gets the last chapter of the previous book if at the begining', done => {
+        Book.findOne({ name: 'Exodus' }).then(book => {
+          const previous = book.chapters[0].previous();
+          Book.findOne({ name: 'Genesis' }).then(book => {
+            expect(previous).toEqual(book.chapters[book.chapters.length-1]);
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        }).catch(err => {
+          done.fail(err);
+        });
+      });
+
+      it('returns null if at the begining of the Bible', done => {
+        Book.findOne({ name: 'Genesis' }).then(book => {
+          const previous = book.chapters[0].previous();
+          expect(previous).toBeNull();
+          done();
         }).catch(err => {
           done.fail(err);
         });
