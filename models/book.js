@@ -4,6 +4,7 @@ module.exports = function(mongoose) {
   const Schema = mongoose.Schema;
   const Types = Schema.Types;
   const uniqueValidator = require('mongoose-unique-validator');
+  const bookOrder = require('../lib/books');
 
   /**
    * Verse
@@ -32,6 +33,41 @@ module.exports = function(mongoose) {
     },
     verses: [VerseSchema],
   });
+
+  /**
+   * To aid with navigation
+   */
+  ChapterSchema.methods.next = function() {
+    const chapIndex = this.parent().chapters.findIndex(chapter => chapter._id === this._id);
+
+    if (chapIndex + 2 > this.parent().chapters.length) {
+      const bookIndex = bookOrder.findIndex(book => book === this.parent().name);
+
+      if (bookIndex + 2 > bookOrder.length) {
+        return null;
+      }
+
+      return `/${bookOrder[bookIndex+1].replace(/ /g, "_")}/1`;
+    }
+
+    return `/${this.parent().name.replace(/ /g, "_")}/${chapIndex+2}`;
+  }
+
+  ChapterSchema.methods.previous = function() {
+    const chapIndex = this.parent().chapters.findIndex(chapter => chapter._id === this._id);
+
+    if (!chapIndex) {
+      const bookIndex = bookOrder.findIndex(book => book === this.parent().name);
+
+      if (bookIndex - 1 < 0 ) {
+        return null;
+      }
+
+      return `/${bookOrder[bookIndex-1].replace(/ /g, "_")}/end`;
+    }
+
+    return `/${this.parent().name.replace(/ /g, "_")}/${chapIndex}`;
+  }
 
   /**
    * Book

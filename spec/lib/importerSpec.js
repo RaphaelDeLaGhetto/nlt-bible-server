@@ -44,6 +44,4 @@ describe('importer', () => {
       done();
     });
   });
-
-
 });

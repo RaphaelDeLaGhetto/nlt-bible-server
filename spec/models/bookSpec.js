@@ -203,75 +203,106 @@ describe('Book', () => {
       });
     });
 
-    describe('#previous', () => {
-
-      it('gets the chapter that follows the current', done => {
-        Book.findOne({ name: 'Genesis' }).then(book => {
-          const next = book.chapters[0].next();
-          expect(next).toEqual(book.chapters[0]);
-          done();
-        }).catch(err => {
-          done.fail(err);
-        });
-      });
- 
-      it('gets the first chapter of the next book if at the end', done => {
-        Book.findOne({ name: 'Genesis' }).then(book => {
-          const next = book.chapters[1].next();
-          Book.findOne({ name: 'Exodus' }).then(book => {
-            expect(next).toEqual(book.chapters[0]);
-            done();
-          }).catch(err => {
-            done.fail(err);
-          });
-        }).catch(err => {
-          done.fail(err);
-        });
-      });
-
-      it('returns null if at the end of the Bible', done => {
-        Book.findOne({ name: 'Revelation' }).then(book => {
-          const next = book.chapters[book.chapters.length-1].next();
-          expect(next).toBeNull();
-          done();
-        }).catch(err => {
-          done.fail(err);
-        });
-      });
-    });
-
-    describe('#previous', () => {
-      it('gets the chapter that precedes the current', done => {
-        Book.findOne({ name: 'Genesis' }).then(book => {
-          const previous = book.chapters[1].previous();
-          expect(previous).toEqual(book.chapters[0]);
-          done();
-        }).catch(err => {
-          done.fail(err);
-        });
-      });
-
-      it('gets the last chapter of the previous book if at the begining', done => {
-        Book.findOne({ name: 'Exodus' }).then(book => {
-          const previous = book.chapters[0].previous();
+    describe('Chapter', () => {
+      describe('#next', () => {
+        it('gets the chapter that follows the current', done => {
           Book.findOne({ name: 'Genesis' }).then(book => {
-            expect(previous).toEqual(book.chapters[book.chapters.length-1]);
+            expect(book.chapters[0].next()).toEqual('/Genesis/2');
             done();
           }).catch(err => {
             done.fail(err);
           });
-        }).catch(err => {
-          done.fail(err);
+        });
+   
+        it('gets the first chapter of the next book if at the end', done => {
+          Book.findOne({ name: 'Genesis' }).then(book => {
+            expect(book.chapters[book.chapters.length - 1].next()).toEqual('/Exodus/1');
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        });
+
+        it('underscores book names when going to the next book', done => {
+          Book.findOne({ name: 'Colossians' }).then(book => {
+            const next = book.chapters[book.chapters.length-1].next();
+            expect(next).toEqual('/1_Thessalonians/1');
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        });
+
+        it('underscores book names when going forward a chapter', done => {
+          Book.findOne({ name: 'Song of Solomon' }).then(book => {
+            const next = book.chapters[1].next();
+            expect(next).toEqual('/Song_of_Solomon/3');
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        });
+  
+        it('returns null if at the end of the Bible', done => {
+          Book.findOne({ name: 'Revelation' }).then(book => {
+            const next = book.chapters[book.chapters.length-1].next();
+            expect(next).toBeNull();
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
         });
       });
+  
+      describe('#previous', () => {
+        it('gets the chapter that precedes the current', done => {
+          Book.findOne({ name: 'Genesis' }).then(book => {
+            expect(book.chapters[1].previous()).toEqual('/Genesis/1');
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        });
+  
+        it('gets the last chapter of the previous book if at the beginning', done => {
+          Book.findOne({ name: 'Exodus' }).then(book => {
+            // This has to be redirected from the controller, otherwise these nice
+            // synchronous functions require a callback
+            expect(book.chapters[0].previous()).toEqual('/Genesis/end');
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        });
 
-      it('returns null if at the begining of the Bible', done => {
-        Book.findOne({ name: 'Genesis' }).then(book => {
-          const previous = book.chapters[0].previous();
-          expect(previous).toBeNull();
-          done();
-        }).catch(err => {
-          done.fail(err);
+        it('underscores book names when going back a book', done => {
+          Book.findOne({ name: 'Isaiah' }).then(book => {
+            // This has to be redirected from the controller, otherwise these nice
+            // synchronous functions require a callback
+            expect(book.chapters[0].previous()).toEqual('/Song_of_Solomon/end');
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        });
+
+        it('underscores book names when going back a chapter', done => {
+          Book.findOne({ name: 'Song of Solomon' }).then(book => {
+            const previous = book.chapters[1].previous();
+            expect(previous).toEqual('/Song_of_Solomon/1');
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
+        });
+ 
+        it('returns null if at the begining of the Bible', done => {
+          Book.findOne({ name: 'Genesis' }).then(book => {
+            expect(book.chapters[0].previous()).toBeNull();
+            done();
+          }).catch(err => {
+            done.fail(err);
+          });
         });
       });
     });
