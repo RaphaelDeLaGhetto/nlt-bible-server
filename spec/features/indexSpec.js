@@ -48,11 +48,15 @@ describe('index', () => {
     browser.assert.text('article h1', 'Genesis 1');
   });
 
-  it('links to every book in the Bible', () => {
+  it('shows chapter content', () => {
     browser.assert.text('article section p:nth-child(1)', bible[0].chapters[0].verses[0].number + bible[0].chapters[0].verses[0].text); 
     browser.assert.text('article section p:nth-child(1) sup', bible[0].chapters[0].verses[0].number); 
     browser.assert.text('article section p:nth-child(2)', bible[0].chapters[0].verses[1].number + bible[0].chapters[0].verses[1].text); 
     browser.assert.text('article section p:nth-child(2) sup', bible[0].chapters[0].verses[1].number); 
+  });
+
+  it('links to every book in the Bible', (done) => {
+    done.fail();
   });
 
   it('displays the chapter\'s contents', () => {
