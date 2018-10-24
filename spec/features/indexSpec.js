@@ -15,7 +15,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
 describe('index', () => {
 
-  let browser;
+  let browser, bible;
 
   beforeEach((done) => {
     browser = new Browser({ waitDuration: '30s', loadCss: false });
@@ -24,6 +24,7 @@ describe('index', () => {
       if (err) {
         return done.fail(err);
       }
+      bible = results;
 
       browser.visit('/', (err) => {
         if (err) {
@@ -47,9 +48,22 @@ describe('index', () => {
     browser.assert.text('article h1', 'Genesis 1');
   });
 
-  it('displays a book menu', () => {
-//    browser.assert.text('article h1', 'Genesis 1');
+  it('links to every book in the Bible', () => {
+    browser.assert.text('article section p:nth-child(1)', bible[0].chapters[0].verses[0].number + bible[0].chapters[0].verses[0].text); 
+    browser.assert.text('article section p:nth-child(1) sup', bible[0].chapters[0].verses[0].number); 
+    browser.assert.text('article section p:nth-child(2)', bible[0].chapters[0].verses[1].number + bible[0].chapters[0].verses[1].text); 
+    browser.assert.text('article section p:nth-child(2) sup', bible[0].chapters[0].verses[1].number); 
+  });
+
+  it('displays the chapter\'s contents', () => {
+    browser.assert.text('article h1', 'Genesis 1');
+  });
+
+  it('displays a link to the next chapter', () => {
+    browser.assert.link('a#next-chapter', 'next', '/Genesis/2');
+  });
+
+  it('does not display a link to the previous chapter', () => {
+    browser.assert.elements('a#previous-chapter', 0);
   });
 });
-
-

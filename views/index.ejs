@@ -8,6 +8,21 @@
     <main>
       <article>
         <h1><%= book.name %> <%= chapter + 1 %></h1>
+        <nav>
+          <% if (book.chapters[chapter].previous()) { %>
+            <a id="previous-chapter" href="<%- book.chapters[chapter].previous() %>">prev</a>
+          <% } %>
+          <% if (book.chapters[chapter].next()) { %>
+            <a id="next-chapter" href="<%- book.chapters[chapter].next() %>">next</a>
+          <% } %>
+        </nav>
+        <section>
+          <% for (const verse of book.chapters[chapter].verses) { %>
+            <p>
+              <sup><%= verse.number %></sup><%= verse.text %>
+            </p>
+          <% } %>
+        </section>
       </article>
     </main>
   </body>
