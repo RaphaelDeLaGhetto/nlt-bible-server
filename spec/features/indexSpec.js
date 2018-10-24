@@ -60,10 +60,10 @@ describe('index', () => {
   });
 
   it('displays a link to the next chapter', () => {
-    browser.assert.link('a#next-chapter', 'next', '/Genesis/2');
+    browser.assert.link('a.next-chapter', 'next', '/Genesis/2');
   });
 
   it('does not display a link to the previous chapter', () => {
-    browser.assert.elements('a#previous-chapter', 0);
+    browser.assert.elements('a.previous-chapter', 0);
   });
 });
