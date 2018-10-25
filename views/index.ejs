@@ -6,6 +6,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
+    <% if (book.name === 'Genesis' && chapter === 0) { %>
+      <% include _copy %>
+    <% } %>
     <nav>
       <details id="books">
         <summary>All Books</summary>

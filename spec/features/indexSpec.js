@@ -76,4 +76,18 @@ describe('index', () => {
   it('does not display a link to the previous chapter', () => {
     browser.assert.elements('a.previous-chapter', 0);
   });
+
+  it('only displays copy on the first page', done => {
+    browser.assert.element('.copy');
+    browser.clickLink('next', err => {
+      if (err) {
+        done.fail();
+      }
+      browser.assert.success();
+      browser.assert.elements('.copy', 0);
+      done();
+    });
+  });
+
+
 });
