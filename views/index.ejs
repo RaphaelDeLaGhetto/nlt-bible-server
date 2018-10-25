@@ -5,6 +5,16 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
+    <nav>
+      <details id="books">
+        <summary>All Books</summary>
+        <% for (const title of bookTitles) { %>
+          <p>
+            <a href="/<%= title.replace(/ /g, '_') %>"><%= title %></a>
+          </p>
+        <% } %>
+      </details>
+    </nav>
     <main>
       <article>
         <h1><%= book.name %> <%= chapter + 1 %></h1>

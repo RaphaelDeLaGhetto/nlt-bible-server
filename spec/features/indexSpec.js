@@ -8,39 +8,43 @@ const PORT = process.env.NODE_ENV === 'production' ? 3000 : 3001;
 const db = require('../../models');
 const importer = require('../../lib/importer');
 const data = require('../data/nlt-sample.json');
+const bookTitles = require('../../lib/books');
 
 Browser.localhost('example.com', PORT);
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
 describe('index', () => {
 
   let browser, bible;
 
-  beforeEach((done) => {
-    browser = new Browser({ waitDuration: '30s', loadCss: false });
-
+  beforeAll(done => {
     importer(data, (err, results) => {
       if (err) {
         return done.fail(err);
       }
       bible = results;
-
-      browser.visit('/', (err) => {
-        if (err) {
-          return done.fail(err);
-        }
-        browser.assert.success();
-        done();
-      });
+      done();
     });
   });
 
-  afterEach(done => {
+  afterAll(done => {
     db.mongoose.connection.db.dropDatabase().then((err, result) => {
       done();
     }).catch(err => {
       done.fail(err);
+    });
+  });
+
+  beforeEach((done) => {
+    browser = new Browser({ waitDuration: '30s', loadCss: false });
+
+    browser.visit('/', (err) => {
+      if (err) {
+        return done.fail(err);
+      }
+      browser.assert.success();
+      done();
     });
   });
 
@@ -55,12 +59,14 @@ describe('index', () => {
     browser.assert.text('article section p:nth-child(2) sup', bible[0].chapters[0].verses[1].number); 
   });
 
-  it('links to every book in the Bible', (done) => {
-    done.fail();
-  });
+  it('links to every book in the Bible', () => {
+    browser.assert.element('details#books')
+    browser.assert.text('details#books summary', 'All Books')
+    browser.assert.elements('details#books p a', 66)
 
-  it('displays the chapter\'s contents', () => {
-    browser.assert.text('article h1', 'Genesis 1');
+    for (const title of bookTitles) {    
+      browser.assert.link('details#books p a', title, `/${title.replace(/ /g, "_")}`);
+    }
   });
 
   it('displays a link to the next chapter', () => {

@@ -21,15 +21,15 @@ describe('Book', () => {
     done();
   });
 
-  afterEach(done => {
-    db.mongoose.connection.db.dropDatabase().then((err, result) => {
-      done();
-    }).catch(err => {
-      done.fail(err);
-    });
-  });
-
   describe('basic validation', () => {
+    afterEach(done => {
+      db.mongoose.connection.db.dropDatabase().then((err, result) => {
+        done();
+      }).catch(err => {
+        done.fail(err);
+      });
+    });
+
     it('initializes the object with the correct key/value pairs', () => {
       let book = new Book(required);
       // Believe it or not, the `undefined` values actually work to
@@ -81,6 +81,14 @@ describe('Book', () => {
     let book;
     beforeEach(() => {
       book = new Book({ name: "Genesis" });
+    });
+
+    afterEach(done => {
+      db.mongoose.connection.db.dropDatabase().then((err, result) => {
+        done();
+      }).catch(err => {
+        done.fail(err);
+      });
     });
 
     it('adds a chapter', done => {
@@ -183,7 +191,7 @@ describe('Book', () => {
   });
 
   describe('navigation aids', () => {
-    beforeEach((done) => {
+    beforeAll(done => {
 
       let bible;
       importer(data, (err, results) => {
@@ -195,7 +203,7 @@ describe('Book', () => {
       });
     });
 
-    afterEach(done => {
+    afterAll(done => {
       db.mongoose.connection.db.dropDatabase().then((err, result) => {
         done();
       }).catch(err => {
