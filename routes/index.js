@@ -20,6 +20,9 @@ router.get('/', function(req, res, next) {
  */
 router.get('/:book', function(req, res, next) {
   db.Book.findOne({ name: req.params.book.replace(/_/g, ' ') }).then(book => {
+    if (!book) {
+      return res.render('huh');
+    }
     res.render('index', { book: book, chapter: 0, bookTitles: bookTitles });
   }).catch(err => {
     console.log(err);
@@ -32,6 +35,9 @@ router.get('/:book', function(req, res, next) {
  */
 router.get('/:book/:chapter', function(req, res, next) {
   db.Book.findOne({ name: req.params.book.replace(/_/g, ' ') }).then(book => {
+    if (!book || req.params.chapter > book.chapters.length) {
+      return res.render('huh');
+    }
     res.render('index', { book: book,
                           chapter: req.params.chapter === 'end' ? book.chapters.length - 1: req.params.chapter - 1,
                           bookTitles: bookTitles });

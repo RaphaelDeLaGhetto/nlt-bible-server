@@ -104,4 +104,11 @@ describe('chapter navigation', () => {
       checkLinks(chapterCount);
     });
   });
+
+  it('doesn\'t barf if chapter doesn\'t exist', done => {
+    browser.visit('/Revelation/23', err => {
+      browser.assert.text('#message', 'Whatchoo talkin\' \'bout, Willis?');
+      done();
+    });
+  });
 });

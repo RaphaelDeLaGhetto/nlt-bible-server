@@ -69,4 +69,10 @@ describe('book navigation', () => {
     checkLinks(bookTitles);
   });
 
+  it('doesn\'t barf if book doesn\'t exist', done => {
+    browser.visit('/Tobit', err => {
+      browser.assert.text('#message', 'Whatchoo talkin\' \'bout, Willis?');
+      done();
+    });
+  });
 });
