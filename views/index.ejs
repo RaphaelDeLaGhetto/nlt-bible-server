@@ -19,9 +19,16 @@
         <% } %>
       </details>
     </nav>
+    <br />
     <main>
       <article>
-        <h1><%= book.name %> <%= chapter + 1 %></h1>
+        <details id="chapters">
+          <summary><h1><%= book.name %> <%= chapter + 1 %></h1></summary>
+          <% for (let i = 1; i <= book.chapters.length; i++) { %>
+            <a href="/<%= book.name.replace(/ /g, '_') %>/<%= i %>"><%= i %></a>
+          <% } %>
+        </details>
+        <br />
         <nav>
           <% if (book.chapters[chapter].previous()) { %>
             <a class="previous-chapter" href="<%- book.chapters[chapter].previous() %>">prev</a>

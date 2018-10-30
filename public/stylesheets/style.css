@@ -10,3 +10,7 @@ a {
 .copy {
   text-align: center;
 }
+
+summary h1 {
+  display: inline;
+}

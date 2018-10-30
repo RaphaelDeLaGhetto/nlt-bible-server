@@ -107,8 +107,41 @@ describe('chapter navigation', () => {
 
   it('doesn\'t barf if chapter doesn\'t exist', done => {
     browser.visit('/Revelation/23', err => {
+      if (err) {
+        done.fail(err);
+      }
+
       browser.assert.text('#message', 'Whatchoo talkin\' \'bout, Willis?');
       done();
+    });
+  });
+
+  it('displays links to every chapter in the book', done => {
+    browser.visit('/', err => {
+      if (err) {
+        done.fail(err);
+      }
+      browser.assert.link('details#chapters a', '1', '/Genesis/1');
+      browser.assert.link('details#chapters a', '2', '/Genesis/2');
+      browser.visit('/Revelation/22', err => {
+        if (err) {
+          done.fail(err);
+        }
+        for (let i = 1; i < 23; i++) {
+          browser.assert.link('details#chapters a', `${i}`, `/Revelation/${i}`);
+        }
+
+        browser.visit('/Song_of_Solomon', err => {
+          if (err) {
+            done.fail(err);
+          }
+          browser.assert.link('details#chapters a', '1', '/Song_of_Solomon/1');
+          browser.assert.link('details#chapters a', '2', '/Song_of_Solomon/2');
+          browser.assert.link('details#chapters a', '3', '/Song_of_Solomon/3');
+
+          done();
+        });
+      });
     });
   });
 });
